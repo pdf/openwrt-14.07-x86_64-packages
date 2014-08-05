@@ -23,8 +23,8 @@ include $(INCLUDE_DIR)/package.mk
 define Package/gnupg
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+zlib +libncurses +libreadline
-  TITLE:=GNU privacy guard - a free PGP replacement
+  DEPENDS:=+zlib +libncurses +libreadline +libopenldap +bzip2 +libcurl
+  TITLE:=GNU privacy guard - a free PGP replacement (big version)
   URL:=http://www.gnupg.org/
 endef
 
@@ -36,30 +36,28 @@ define Package/gnupg/description
  .
  GnuPG does not use any patented algorithms so it cannot be compatible
  with PGP2 because it uses IDEA (which is patented worldwide).
+ .
+ This version of GnuPG has basic functionality like keyserver support
+ enabled, so it is larger and carries some additional dependencies,
+ however this package still doesn't support every feature available.
 endef
 
 CONFIGURE_ARGS += \
 	--disable-rpath \
-	--disable-asm \
 	--disable-gnupg-iconv \
 	--disable-card-support \
-	--disable-agent-support \
-	--disable-bzip2 \
-	--disable-exec \
-	--disable-ldap \
-	--disable-hkp \
-	--disable-finger \
-	--disable-ftp \
-	--disable-dns-srv \
-	--enable-fake-curl \
-	--disable-regex \
 
 MAKE_FLAGS += \
 	SUBDIRS="m4 intl zlib util mpi cipher tools g10 keyserver ${checks}" \
 
 define Package/gnupg/install
 	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/usr/lib/gnupg
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gpg $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnupg/gpgkeys_curl $(1)/usr/lib/gnupg/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnupg/gpgkeys_finger $(1)/usr/lib/gnupg/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnupg/gpgkeys_hkp $(1)/usr/lib/gnupg/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/gnupg/gpgkeys_ldap $(1)/usr/lib/gnupg/
 endef
 
 $(eval $(call BuildPackage,gnupg))
