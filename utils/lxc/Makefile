@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lxc
-PKG_VERSION:=1.0.3
+PKG_VERSION:=1.0.5
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://linuxcontainers.org/downloads/
-PKG_MD5SUM:=55873b1411a606397309aa6c4c4263b3
+PKG_MD5SUM:=9d9af9e9e69a831cd50b58d91c786013
 
 PKG_BUILD_DEPENDS:=lua
 PKG_BUILD_PARALLEL:=1
@@ -69,7 +69,7 @@ endef
 define Package/lxc-templates
   $(call Package/lxc/Default)
   TITLE:=LXC virtual machine templates
-  DEPENDS:= lxc @BROKEN
+  DEPENDS:= lxc
 endef
 
 define Package/liblxc
