@@ -68,7 +68,7 @@ define Package/ntopng/install
 	$(INSTALL_DIR) $(1)/usr/share/ntopng
 	$(CP) -r $(PKG_INSTALL_DIR)/usr/share/$(PKG_NAME)/* $(1)/usr/share/$(PKG_NAME)
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/ntopng.init $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/ntopng.init $(1)/etc/init.d/ntopng
 	$(INSTALL_DIR) $(1)/etc/ntopng
 	$(INSTALL_DATA) ./files/ntopng.conf $(1)/etc/ntopng
 endef

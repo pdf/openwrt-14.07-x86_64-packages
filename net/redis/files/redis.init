@@ -17,7 +17,7 @@ start() {
 }
 
 stop() {
-	if [ -f /var/run/redis.pid ] ; then
+	if [ ! -f $REDIS_PID ] ; then
 		echo 'Not running!'
 	else
 		PID=$(cat $REDIS_PID)
@@ -26,7 +26,7 @@ stop() {
 		echo -n 'Waiting for redis shutdown...'
 		while [ -x /proc/$PID ] ; do
 			echo -n '.'
-			timeout=$(timeout - 1)
+			timeout=$((timeout - 1))
 			if [ $timeout -eq 0 ] ; then
 				break
 			fi

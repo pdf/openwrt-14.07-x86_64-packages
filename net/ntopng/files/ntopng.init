@@ -7,14 +7,38 @@ SERVICE_USE_PID=1
 
 NTOPNG_BIN="/usr/bin/ntopng"
 NTOPNG_CONFIG="/etc/ntopng/ntopng.conf"
-NTOPNG_PID="/var/run/ntopng.pid"
+NTOPNG_PID="/var/run/ntopng/ntopng.pid"
 NTOPNG_DATA="/var/tmp/ntopng"
 
 start() {
-	[ -d $NTOPNG_DATA ] || mkdir -p $NTOPNG_DATA && chown nobody:nogroup $NTOPNG_DATA
-	service_start $NTOPNG_BIN --daemon --pid "$NTOPNG_PID" "$NTOPNG_CONFIG"
+	PID_DIR=$(dirname $NTOPNG_PID)
+	if [ ! -d $PID_DIR ] ; then
+		mkdir -p $PID_DIR && chown nobody:nogroup $PID_DIR
+	fi
+	if [ ! -d $NTOPNG_DATA ] ; then
+		mkdir -p $NTOPNG_DATA && chown nobody:nogroup $NTOPNG_DATA
+	fi
+	service_start $NTOPNG_BIN "$NTOPNG_CONFIG" > /dev/null 1>&1
 }
 
 stop() {
-	service_stop $NTOPNG_BIN
+	if [ ! -f $NTOPNG_PID ] ; then
+		echo 'Not running!'
+	else
+		PID=$(cat $NTOPNG_PID)
+		timeout=10
+		service_stop $NTOPNG_BIN
+		kill $PID
+		echo -n 'Waiting for ntopng shutdown...'
+		while [ -x /proc/$PID ] ; do
+			echo -n '.'
+			timeout=$((timeout - 1))
+			if [ $timeout -eq '0' ] ; then
+				break
+			fi
+			sleep 1
+		done
+		echo 'done.'
+		[ -x /proc/$PID ] && kill -9 $PID
+	fi
 }
