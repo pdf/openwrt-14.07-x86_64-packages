@@ -43,6 +43,11 @@ define Package/redis/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)-server $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)-check-dump $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)-check-aof $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)-benchmark $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/redis.init $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc
+	$(INSTALL_DATA) ./files/redis.conf $(1)/etc
 endef
 
 $(eval $(call BuildPackage,redis))

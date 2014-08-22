@@ -30,7 +30,7 @@ define Package/ntopng
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Web-based Traffic Analysis and Flow Collection
-  DEPENDS:=+libxml2 +libsqlite3 +libpcap +libgeoip +libstdcpp +libjson-c +librt
+  DEPENDS:=+libxml2 +libsqlite3 +libpcap +libgeoip +libstdcpp +libjson-c +librt +redis
   URL:=http://ntop.org/products/ntop/
 endef
 
@@ -38,6 +38,10 @@ define Package/ntopng/description
 	ntopng is the next generation version of the original ntop, a network traffic
 	probe that shows the network usage, similar to what the popular top Unix command
 	does. ntopng is based on libpcap.
+endef
+
+define Package/ntopng/conffiles
+/etc/ntopng/ntopng.conf
 endef
 
 define Build/Configure
@@ -63,6 +67,10 @@ define Package/ntopng/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME) $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/usr/share/ntopng
 	$(CP) -r $(PKG_INSTALL_DIR)/usr/share/$(PKG_NAME)/* $(1)/usr/share/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/ntopng.init $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/ntopng
+	$(INSTALL_DATA) ./files/ntopng.conf $(1)/etc/ntopng
 endef
 
 $(eval $(call BuildPackage,ntopng))

@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=80
+
+SERVICE_USE_PID=1
+
+NTOPNG_BIN="/usr/bin/ntopng"
+NTOPNG_CONFIG="/etc/ntopng/ntopng.conf"
+NTOPNG_PID="/var/run/ntopng.pid"
+NTOPNG_DATA="/var/tmp/ntopng"
+
+start() {
+	[ -d $NTOPNG_DATA ] || mkdir -p $NTOPNG_DATA && chown nobody:nogroup $NTOPNG_DATA
+	service_start $NTOPNG_BIN --daemon --pid "$NTOPNG_PID" "$NTOPNG_CONFIG"
+}
+
+stop() {
+	service_stop $NTOPNG_BIN
+}
