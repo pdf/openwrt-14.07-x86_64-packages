@@ -30,6 +30,10 @@ define Package/redis/description
 	strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
 endef
 
+define Package/redis/conffiles
+/etc/redis.conf
+endef
+
 define Build/Compile
 	sed -e 's#^\(REAL_CFLAGS.* \)$$$$(ARCH)#\1#g' -i $(PKG_BUILD_DIR)/deps/hiredis/Makefile
 	sed -e 's#^\([[:space:]]*$$$$(AR)\)#\1 rcu#g' -i $(PKG_BUILD_DIR)/deps/lua/src/Makefile
