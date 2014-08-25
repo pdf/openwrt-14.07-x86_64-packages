@@ -72,7 +72,8 @@ CONFIGURE_VARS += \
 CONFIGURE_ARGS += \
 	--without-tcl \
 	--without-libedit \
-	--localstatedir=/etc
+	--localstatedir=/etc \
+	--without-system-verto
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
