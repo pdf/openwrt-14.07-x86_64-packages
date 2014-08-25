@@ -35,9 +35,14 @@ define Package/vim
   TITLE+= (Tiny)
 endef
 
-define Package/vim-full
+define Package/vim-huge
   $(call Package/vim/Default)
   TITLE+= (Normal)
+endef
+
+define Package/vim-full
+  $(call Package/vim/Default)
+  TITLE+= (Full)
 endef
 
 define Package/vim-runtime
@@ -57,6 +62,10 @@ define Package/xxd
   URL:=http://www.vim.org/
 endef
 
+define Package/vim-huge/conffiles
+/usr/share/vim/vimrc
+endef
+
 define Package/vim-full/conffiles
 /usr/share/vim/vimrc
 endef
@@ -68,6 +77,11 @@ endef
 define Package/vim/description
  Vim is an almost compatible version of the UNIX editor Vi.
  (Tiny build)
+endef
+
+define Package/vim-huge/description
+ Vim is an almost compatible version of the UNIX editor Vi.
+ (Huge build)
 endef
 
 define Package/vim-full/description
@@ -123,6 +137,19 @@ define Build/Compile/vim
 endef
 endif
 
+ifneq ($(CONFIG_PACKAGE_vim-huge),)
+define Build/Compile/vim-huge
+	$(call Build/Configure/Default, \
+		--with-features=huge \
+		--enable-multibyte \
+	)
+	$(MAKE) -C $(PKG_BUILD_DIR) clean
+	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
+		DESTDIR="$(PKG_INSTALL_DIR)" all
+	$(CP) $(PKG_BUILD_DIR)/src/$(PKG_NAME) $(PKG_BUILD_DIR)/vim_huge
+endef
+endif
+
 ifneq ($(CONFIG_PACKAGE_vim-full),)
 define Build/Compile/vim-full
 	$(call Build/Configure/Default, \
@@ -152,6 +179,7 @@ endef
 
 define Build/Compile
 $(call Build/Compile/vim)
+$(call Build/Compile/vim-huge)
 $(call Build/Compile/vim-full)
 $(call Build/Compile/vim-runtime)
 $(call Build/Compile/xxd)
@@ -162,6 +190,13 @@ define Package/vim/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_tiny $(1)/usr/bin/vim
 	$(INSTALL_DIR) $(1)/usr/share/vim
 	$(INSTALL_CONF) ./files/vimrc $(1)/usr/share/vim/
+endef
+
+define Package/vim-huge/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_huge $(1)/usr/bin/vim
+	$(INSTALL_DIR) $(1)/usr/share/vim
+	$(INSTALL_CONF) ./files/vimrc.full $(1)/usr/share/vim/vimrc
 endef
 
 define Package/vim-full/install
@@ -186,6 +221,7 @@ define Package/xxd/install
 endef
 
 $(eval $(call BuildPackage,vim))
+$(eval $(call BuildPackage,vim-huge))
 $(eval $(call BuildPackage,vim-full))
 $(eval $(call BuildPackage,vim-runtime))
 $(eval $(call BuildPackage,vim-help))
